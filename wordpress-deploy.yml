@@ -1,0 +1,24 @@
+---
+- name: Waiting for newly created AWS-EC2 Resource to become available
+  hosts: wordpress
+  become: true
+  gather_facts: no
+  pre_tasks:
+
+      - name: Waiting for SSH to come up
+        wait_for_connection:
+           delay: 30
+           timeout: 600
+
+      - name: Pinging the newly created resource
+        ping:
+
+- name: Installing and Configuring Apache2, MySQL, PHP and Wordpress
+  hosts: wordpress
+  become: true
+  gather_facts: yes
+  roles:
+   - role: apache2
+   - role: mysql
+   - role: php
+   - role: wordpress #downloads and configures wordpress application on the destination server

@@ -1,0 +1,9 @@
+---
+# tasks file for apache2
+# Install required packages for Apache2
+- name: Installing packages for Apache2
+  apt: name={{ item }} update_cache=yes state=latest
+  with_items:
+    - apache2
+    - ghostscript
+    - libapache2-mod-php

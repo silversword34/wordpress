@@ -1,0 +1,57 @@
+---
+# tasks file for wordpress
+- name: Stopping Apache Services before Wordpress application configuration
+  become: true
+  service: name={{ item }} state=stopped
+  with_items:
+         - apache2
+         - apache-htcacheclean.service
+  notify: 
+         - restart apache2
+         - restart apache-htcacheclean.service
+
+- name: Generating and copying Wordpress configuration file (wordpress.conf)
+  template:
+         src: "{{ root_dir }}/wordpress/templates/wordpress_template.j2"
+         dest: "/etc/apache2/sites-available/wordpress.conf"
+
+- name: Creating OS user for Wordpress application
+  user:
+    name: www-data
+    groups: # Empty by default, here we give it some groups
+     - www-data
+    state: present
+    shell: /usr/sbin/nologin # Nologin Shell
+    system: no
+    createhome: yes
+    home: /home/www-data
+
+- name: Creating directory for Wordpress application
+  file:
+    path: "{{ wordpress_documentroot }}"
+    state: directory
+    owner: www-data
+    group: www-data
+    mode: 0775
+
+- name: Downloading WordPress
+  get_url: "url=https://wordpress.org/latest.tar.gz dest={{ wordpress_documentroot }}/wordpress-latest.tar.gz"
+
+- name: Extract WordPress archive
+  become: true
+  command: chdir={{ wordpress_documentroot }} {{ item }}
+  with_items:
+         - tar -zxf {{ wordpress_documentroot }}/wordpress-latest.tar.gz
+
+- name: Generating and copying Wordpress configuration file (wp-config.php)
+  template:
+         src: "{{ root_dir }}/wordpress/templates/wp-config.j2"
+         dest: "{{ wordpress_documentroot }}/wordpress/wp-config.php"
+
+- name: Changes permissions for Wordpress application
+  file:
+    path: "{{ wordpress_documentroot }}"
+    recurse: true
+    owner: www-data
+    group: www-data
+

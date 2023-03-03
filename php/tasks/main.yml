@@ -1,0 +1,15 @@
+---
+# tasks file for php
+- name: Installing packages for PHP
+  apt: name={{ item }} update_cache=yes state=latest
+  with_items:
+    - php 
+    - php-bcmath 
+    - php-curl 
+    - php-imagick 
+    - php-intl 
+    - php-json 
+    - php-mbstring 
+    - php-mysql 
+    - php-xml 
+    - php-zip
