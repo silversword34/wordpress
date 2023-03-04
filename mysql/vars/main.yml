@@ -1,0 +1,12 @@
+---
+# vars file for mysql 
+# root_dir shows the folder where we deploy roles in our local environment
+root_dir: "/home/labsuser/Assessment"
+# wordpress_documentroot shows the wordpress application will be deployed in the destionation server
+wordpress_documentroot: "/var/www/html"
+# mysql configuration settings
+ansible_python_interpreter: /usr/bin/python3
+# wordpress database connection settings
+wp_db_name: wordpress
+wp_db_username: wordpress
+wp_db_userpassword: wordpress.2023_
